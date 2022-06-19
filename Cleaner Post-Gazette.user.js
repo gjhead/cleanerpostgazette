@@ -1,9 +1,13 @@
 // ==UserScript==
 // @name         Cleaner Post-Gazette
 // @namespace    http://tampermonkey.net/
-// @version      q.0
-// @description  Cleane on Pittsburgh Post-Gazette
-// @author       g jason head
+// @version      1.0
+// @description  Clean up some things on Pittsburgh Post-Gazette.
+// @installURL   https://github.com/gjhead/cleanerpostgazette/raw/main/Cleaner%20Post-Gazette.user.js
+// @updateURL    https://github.com/gjhead/cleanerpostgazette/raw/main/Cleaner%20Post-Gazette.user.js
+// @downloadURL  https://github.com/gjhead/cleanerpostgazette/raw/main/Cleaner%20Post-Gazette.user.js
+// @supportURL   https://github.com/gjhead/cleanerpostgazette/issues
+// @author       G Jason Head
 // @match        https://www.post-gazette.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=post-gazette.com
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
