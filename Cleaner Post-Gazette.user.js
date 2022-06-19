@@ -10,7 +10,7 @@
 // @author       G Jason Head
 // @match        https://www.post-gazette.com/*
 // @icon         https://www.post-gazette.com/favicon-32x32.png
-// @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
+// @require      https://greasyfork.org/scripts/446257-waitforkeyelements-utility-function/code/waitForKeyElements%20utility%20function.js?version=1059316
 // @grant        none
 // ==/UserScript==
 
