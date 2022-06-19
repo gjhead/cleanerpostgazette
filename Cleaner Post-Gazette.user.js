@@ -9,7 +9,7 @@
 // @supportURL   https://github.com/gjhead/cleanerpostgazette/issues
 // @author       G Jason Head
 // @match        https://www.post-gazette.com/*
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=post-gazette.com
+// @icon         https://www.post-gazette.com/favicon-32x32.png
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @grant        none
 // ==/UserScript==
