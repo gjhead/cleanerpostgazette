@@ -97,17 +97,3 @@ function wrapFunction (jNode) {
         targetElement.style.overflowY = 'scroll';
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-}
-
-
