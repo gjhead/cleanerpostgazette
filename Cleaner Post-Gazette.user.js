@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cleaner Post-Gazette
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  Clean up some things on Pittsburgh Post-Gazette.
 // @installURL   https://github.com/gjhead/cleanerpostgazette/raw/main/Cleaner%20Post-Gazette.user.js
 // @updateURL    https://github.com/gjhead/cleanerpostgazette/raw/main/Cleaner%20Post-Gazette.user.js
@@ -70,3 +70,44 @@ function civicFunction (jNode) {
         civic.remove();
     }
 }
+
+waitForKeyElements ('.pg-bigdrawer', gateFunction);
+function gateFunction (jNode) {
+    const gate = document.querySelector('.pg-bigdrawer');
+    if (typeof gate !== 'undefined') {
+        gate.remove();
+    }
+}
+
+waitForKeyElements ('.pg-bigdrawergradient', gradientFunction);
+function gradientFunction (jNode) {
+    const gradient = document.querySelector('.pg-bigdrawergradient');
+    if (typeof gradient !== 'undefined') {
+        gradient.remove();
+    }
+}
+
+waitForKeyElements ('body.pg-bigdraweropen .pgevoke-pagewrapper', wrapFunction);
+function wrapFunction (jNode) {
+    const targetElement = document.querySelector('body.pg-bigdraweropen .pgevoke-pagewrapper');
+    if (targetElement) {
+        // Change CSS properties
+        targetElement.style.height = 'auto';
+        targetElement.style.position = 'relative';
+        targetElement.style.overflowY = 'scroll';
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
