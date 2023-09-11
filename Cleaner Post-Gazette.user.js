@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cleaner Post-Gazette
 // @namespace    http://tampermonkey.net/
-// @version      1.1
+// @version      1.2
 // @description  Clean up some things on Pittsburgh Post-Gazette.
 // @installURL   https://github.com/gjhead/cleanerpostgazette/raw/main/Cleaner%20Post-Gazette.user.js
 // @updateURL    https://github.com/gjhead/cleanerpostgazette/raw/main/Cleaner%20Post-Gazette.user.js
@@ -95,5 +95,36 @@ function wrapFunction (jNode) {
         targetElement.style.height = 'auto';
         targetElement.style.position = 'relative';
         targetElement.style.overflowY = 'scroll';
+    }
+}
+
+waitForKeyElements ('.tp-backdrop.tp-active', wrapFunction);
+function newWrapFunction (jNode) {
+    const targetElement = document.querySelector('.tp-backdrop.tp-active');
+    if (targetElement) {
+        // Change CSS properties
+        targetElement.style.display = 'none';
+        targetElement.style.opacity = '0';
+    }
+}
+
+waitForKeyElements ('#template-container', gateFunction);
+function temContFunction (jNode) {
+    const gate = document.querySelector('#template-container');
+    if (typeof gate !== 'undefined') {
+        gate.remove();
+    }
+}
+
+waitForKeyElements ('.tp-modal', tpModalFunction);
+function tpModalFunction (jNode) {
+    const targetElement = document.querySelector('.tp-modal');
+    if (targetElement) {
+        // Change CSS properties
+        targetElement.style.display = 'none';
+        targetElement.style.opacity = '0';
+    }
+    if (typeof targetElement !== 'undefined') {
+        targetElement.remove();
     }
 }
