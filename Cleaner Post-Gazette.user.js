@@ -1,130 +1,91 @@
 // ==UserScript==
 // @name         Cleaner Post-Gazette
 // @namespace    http://tampermonkey.net/
-// @version      1.2
-// @description  Clean up some things on Pittsburgh Post-Gazette.
-// @installURL   https://github.com/gjhead/cleanerpostgazette/raw/main/Cleaner%20Post-Gazette.user.js
-// @updateURL    https://github.com/gjhead/cleanerpostgazette/raw/main/Cleaner%20Post-Gazette.user.js
-// @downloadURL  https://github.com/gjhead/cleanerpostgazette/raw/main/Cleaner%20Post-Gazette.user.js
-// @supportURL   https://github.com/gjhead/cleanerpostgazette/issues
+// @version      2.2
+// @description  Remove paywalls, ads, overlays, and scroll locks from the Pittsburgh Post-Gazette.
 // @author       G Jason Head
 // @match        https://www.post-gazette.com/*
+// @match        https://newsinteractive.post-gazette.com/*
 // @icon         https://www.post-gazette.com/favicon-32x32.png
-// @require      https://greasyfork.org/scripts/446257-waitforkeyelements-utility-function/code/waitForKeyElements%20utility%20function.js?version=1059316
+// @require      https://greasyfork.org/scripts/446257-waitforkeyelements-utility-function/code/waitForKeyElements%20utility%20function.js
 // @grant        none
 // ==/UserScript==
 
+(function () {
+  'use strict';
 
-waitForKeyElements ('.pgevoke-topads', topAdsMainFunction);
-function topAdsMainFunction (jNode) {
-    const topAdsMain = document.querySelector('.pgevoke-topads');
-    if (typeof topAdsMain !== 'undefined') {
-        topAdsMain.remove();
-    }
-}
+  const selectorsToRemove = [
+    '.pgevoke-topads',
+    '.pgevoke-grid-row[data-nativo]',
+    '.pgevoke-story-topads',
+    '.pgevoke-story-comments-disabled',
+    '.pgevoke-story-comments',
+    '.pgevoke-story-extracontent-nativo',
+    '.pgevoke-civicscience',
+    '.pg-bigdrawer',
+    '.pg-bigdrawergradient',
+    '#template-container',
+  ];
 
-waitForKeyElements ('.pgevoke-grid-row[data-nativo]', nativoHPFunction);
-function nativoHPFunction (jNode) {
-    const nativoHP = document.querySelector('.pgevoke-grid-row[data-nativo]');
-    if (typeof nativoHP !== 'undefined') {
-        nativoHP.remove();
-    }
-}
+  // Remove unwanted junk
+  selectorsToRemove.forEach(sel => waitForKeyElements(sel, el => el.remove()));
 
-waitForKeyElements ('.pgevoke-story-topads', topadsFunction);
-function topadsFunction (jNode) {
-    const topAds = document.querySelector('.pgevoke-story-topads');
-    if (typeof topAds !== 'undefined') {
-        topAds.remove();
-    }
-}
+  // Fix layout when paywall body class appears
+  waitForKeyElements('body.pg-bigdraweropen .pgevoke-pagewrapper', el => {
+    Object.assign(el.style, {
+      height: 'auto',
+      position: 'relative',
+      overflowY: 'scroll',
+    });
+  });
 
-waitForKeyElements ('.pgevoke-story-comments-disabled', commentDisabledFunction);
-function commentDisabledFunction (jNode) {
-    const commentDisabled = document.querySelector('.pgevoke-story-comments-disabled');
-    if (typeof commentDisabled !== 'undefined') {
-        commentDisabled.remove();
-    }
-}
+  // Hide and remove transparent overlays
+  waitForKeyElements('.tp-backdrop.tp-active, .tp-modal', el => {
+    Object.assign(el.style, {
+      display: 'none',
+      opacity: '0',
+    });
+    el.remove();
+  });
 
-waitForKeyElements ('.pgevoke-story-comments', commentFunction);
-function commentFunction (jNode) {
-    const comment = document.querySelector('.pgevoke-story-comments');
-    if (typeof comment !== 'undefined') {
-        comment.remove();
-    }
-}
+  // Auto-scroll un-locker — ensures the page stays scrollable
+  const unlockScroll = () => {
+    const body = document.body;
+    const html = document.documentElement;
 
-waitForKeyElements ('.pgevoke-story-extracontent-nativo', nativoFunction);
-function nativoFunction (jNode) {
-    const nativo = document.querySelector('.pgevoke-story-extracontent-nativo');
-    if (typeof nativo !== 'undefined') {
-        nativo.remove();
-    }
-}
+    // Restore normal scrolling
+    [body, html].forEach(el => {
+      if (el.style.overflow === 'hidden' || getComputedStyle(el).overflow === 'hidden') {
+        el.style.overflow = 'auto';
+        el.style.position = 'static';
+        el.style.height = 'auto';
+      }
+      if (el.classList.contains('pg-bigdraweropen')) {
+        el.classList.remove('pg-bigdraweropen');
+      }
+    });
 
-waitForKeyElements ('.pgevoke-civicscience', civicFunction);
-function civicFunction (jNode) {
-    const civic = document.querySelector('.pgevoke-civicscience');
-    if (typeof civic !== 'undefined') {
-        civic.remove();
+    // Restore scroll on main wrapper if needed
+    const wrapper = document.querySelector('.pgevoke-pagewrapper');
+    if (wrapper) {
+      wrapper.style.overflowY = 'auto';
+      wrapper.style.height = 'auto';
+      wrapper.style.position = 'relative';
     }
-}
 
-waitForKeyElements ('.pg-bigdrawer', gateFunction);
-function gateFunction (jNode) {
-    const gate = document.querySelector('.pg-bigdrawer');
-    if (typeof gate !== 'undefined') {
-        gate.remove();
-    }
-}
+    window.scrollTo(0, window.scrollY); // re-sync scroll position
+  };
 
-waitForKeyElements ('.pg-bigdrawergradient', gradientFunction);
-function gradientFunction (jNode) {
-    const gradient = document.querySelector('.pg-bigdrawergradient');
-    if (typeof gradient !== 'undefined') {
-        gradient.remove();
-    }
-}
+  // Run immediately and periodically
+  setInterval(unlockScroll, 1000);
 
-waitForKeyElements ('body.pg-bigdraweropen .pgevoke-pagewrapper', wrapFunction);
-function wrapFunction (jNode) {
-    const targetElement = document.querySelector('body.pg-bigdraweropen .pgevoke-pagewrapper');
-    if (targetElement) {
-        // Change CSS properties
-        targetElement.style.height = 'auto';
-        targetElement.style.position = 'relative';
-        targetElement.style.overflowY = 'scroll';
-    }
-}
+  // Watch for new DOM mutations (for re-nuking and scroll locks)
+  const observer = new MutationObserver(() => {
+    selectorsToRemove.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => el.remove());
+    });
+    unlockScroll(); // also re-check scroll state after any DOM change
+  });
 
-waitForKeyElements ('.tp-backdrop.tp-active', wrapFunction);
-function newWrapFunction (jNode) {
-    const targetElement = document.querySelector('.tp-backdrop.tp-active');
-    if (targetElement) {
-        // Change CSS properties
-        targetElement.style.display = 'none';
-        targetElement.style.opacity = '0';
-    }
-}
-
-waitForKeyElements ('#template-container', gateFunction);
-function temContFunction (jNode) {
-    const gate = document.querySelector('#template-container');
-    if (typeof gate !== 'undefined') {
-        gate.remove();
-    }
-}
-
-waitForKeyElements ('.tp-modal', tpModalFunction);
-function tpModalFunction (jNode) {
-    const targetElement = document.querySelector('.tp-modal');
-    if (targetElement) {
-        // Change CSS properties
-        targetElement.style.display = 'none';
-        targetElement.style.opacity = '0';
-    }
-    if (typeof targetElement !== 'undefined') {
-        targetElement.remove();
-    }
-}
+  observer.observe(document.body, { childList: true, subtree: true });
+})();
