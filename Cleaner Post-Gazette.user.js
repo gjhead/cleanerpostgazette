@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      2.2
 // @description  Remove paywalls, ads, overlays, and scroll locks from the Pittsburgh Post-Gazette.
-// @author       G Jason Head
+// @author       crowfly
 // @match        https://www.post-gazette.com/*
 // @match        https://newsinteractive.post-gazette.com/*
 // @icon         https://www.post-gazette.com/favicon-32x32.png
