@@ -35,7 +35,7 @@
     Object.assign(el.style, {
       height: 'auto',
       position: 'relative',
-      overflowY: 'scroll',
+      overflowY: 'auto',
     });
   });
 
@@ -54,15 +54,13 @@
     const html = document.documentElement;
 
     // Restore normal scrolling
-    [body, html].forEach(el => {
-      if (el.style.overflow === 'hidden' || getComputedStyle(el).overflow === 'hidden') {
+    [body, html].forEach(el => {  
+      if (el.style.overflow === 'hidden' || getComputedStyle(el).overflow === 'hidden') 
         el.style.overflow = 'auto';
         el.style.position = 'static';
         el.style.height = 'auto';
       }
-      if (el.classList.contains('pg-bigdraweropen')) {
-        el.classList.remove('pg-bigdraweropen');
-      }
+      el.classList.remove('pg-bigdraweropen', 'pg-bigdraweropen-show');
     });
 
     // Restore scroll on main wrapper if needed
