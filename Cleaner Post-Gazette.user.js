@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cleaner Post-Gazette
 // @namespace    http://tampermonkey.net/
-// @version      2.2
+// @version      2.3
 // @description  Remove paywalls, ads, overlays, and scroll locks from the Pittsburgh Post-Gazette.
 // @author       crowfly
 // @match        https://www.post-gazette.com/*
@@ -54,8 +54,8 @@
     const html = document.documentElement;
 
     // Restore normal scrolling
-    [body, html].forEach(el => {  
-      if (el.style.overflow === 'hidden' || getComputedStyle(el).overflow === 'hidden') 
+    [body, html].forEach(el => {   
+      if (el.style.overflow === 'hidden' || getComputedStyle(el).overflow === 'hidden') {
         el.style.overflow = 'auto';
         el.style.position = 'static';
         el.style.height = 'auto';
