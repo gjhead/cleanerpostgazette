@@ -54,7 +54,7 @@
     const html = document.documentElement;
 
     // Restore normal scrolling
-    [body, html].forEach(el => {   
+    [body, html].forEach(el => {
     if (el.style.overflow === 'hidden' || getComputedStyle(el).overflow === 'hidden') {
         el.style.overflow = 'auto';
         el.style.position = 'static';
@@ -65,27 +65,27 @@
 
     // Restore scroll on main wrapper if needed
     const wrapper = document.querySelector('.pgevoke-pagewrapper');
-    
+
     if (wrapper) {
         wrapper.style.overflowY = 'auto';
         wrapper.style.height = 'auto';
         wrapper.style.position = 'relative';
     }
-    
+
     window.scrollTo(0, window.scrollY); // re-sync scroll position
     };
 
     // Run immediately and periodically
     setInterval(unlockScroll, 1000);
-    
+
     // Watch for new DOM mutations (for re-nuking and scroll locks)
     const observer = new MutationObserver(() => {
         selectorsToRemove.forEach(sel => {
         document.querySelectorAll(sel).forEach(el => el.remove());
     });
-    
+
     unlockScroll(); // also re-check scroll state after any DOM change
     });
-    
+
     observer.observe(document.body, { childList: true, subtree: true });
 })();
